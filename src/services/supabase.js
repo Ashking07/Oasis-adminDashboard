@@ -5,3 +5,5 @@ const supabaseKey = "sb_publishable_pyFLS5GHU2DEzorbnT0bCg_H9z2RhAK";
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 export default supabase;
+
+// Note: This is a public publishable key. Do not use it for sensitive operations.
