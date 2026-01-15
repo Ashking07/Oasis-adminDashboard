@@ -7,3 +7,4 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 export default supabase;
 
 // Note: This is a public publishable key. Do not use it for sensitive operations.
+// For vercel deployment, make sure to set the environment variables in the Vercel dashboard.
