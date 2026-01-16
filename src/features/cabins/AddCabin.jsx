@@ -6,7 +6,7 @@ function AddCabin() {
   return (
     <div>
       <Modal>
-        <Modal.Open opens="cabin-form">
+        <Modal.Open opens="cabin-form"> 
           <Button>Add new cabin</Button>
         </Modal.Open>
         <Modal.Window name="cabin-form">
@@ -16,6 +16,8 @@ function AddCabin() {
     </div>
   );
 }
+
+// Above, Modal.Open is actually Modal.trigger and Modal.Window is actually Modal.content: check Notion notes.
 
 // function AddCabin() {
 //   const [isOpenModal, setIsOpenModal] = useState(false);
