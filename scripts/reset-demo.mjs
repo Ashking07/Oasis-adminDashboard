@@ -1,10 +1,9 @@
-// scripts/reset-demo.mjs
 import { createClient } from "@supabase/supabase-js";
 
-// Seed data (Node-safe)
-import cabins from "./seed/cabins.json" with { type: "json" };
-import guests from "./seed/guests.json" with { type: "json" };
-import bookingSeeds from "./seed/bookings.json" with { type: "json" };
+import cabins from "./seed/cabins.json" assert { type: "json" };
+import guests from "./seed/guests.json" assert { type: "json" };
+import bookingSeeds from "./seed/bookings.json" assert { type: "json" };
+
 
 // ---------- small utilities ----------
 function env(name) {

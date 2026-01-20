@@ -13,12 +13,16 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: "20"
 
-      - run: npm ci
+      - run: npm ci --omit=dev --ignore-scripts
 
       - name: Reset demo DB
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: node scripts/reset-demo.mjs
+
+
+# I allow full CRUD in the public demo, but I run a scheduled server-side reset using Supabase 
+# service role credentials via GitHub Actions to keep the dataset consistent.
