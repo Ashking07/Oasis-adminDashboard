@@ -1,0 +1,33 @@
+[
+  { "createdOffset": -20, "startOffset": 0,  "endOffset": 7,  "cabinId": 1, "guestId": 2,  "hasBreakfast": true,  "observations": "I have a gluten allergy and would like to request a gluten-free breakfast.", "isPaid": false, "numGuests": 1 },
+  { "createdOffset": -33, "startOffset": -23,"endOffset": -13,"cabinId": 1, "guestId": 3,  "hasBreakfast": true,  "observations": "", "isPaid": true, "numGuests": 2 },
+  { "createdOffset": -27, "startOffset": 12, "endOffset": 18, "cabinId": 1, "guestId": 4,  "hasBreakfast": false, "observations": "", "isPaid": false, "numGuests": 2 },
+
+  { "createdOffset": -45, "startOffset": -45,"endOffset": -29,"cabinId": 2, "guestId": 5,  "hasBreakfast": false, "observations": "", "isPaid": true, "numGuests": 2 },
+  { "createdOffset": -2,  "startOffset": 15, "endOffset": 18, "cabinId": 2, "guestId": 6,  "hasBreakfast": true,  "observations": "", "isPaid": true, "numGuests": 2 },
+  { "createdOffset": -5,  "startOffset": 33, "endOffset": 48, "cabinId": 2, "guestId": 7,  "hasBreakfast": true,  "observations": "", "isPaid": false, "numGuests": 2 },
+
+  { "createdOffset": -65, "startOffset": -25,"endOffset": -20,"cabinId": 3, "guestId": 8,  "hasBreakfast": true,  "observations": "", "isPaid": true, "numGuests": 4 },
+  { "createdOffset": -2,  "startOffset": -2, "endOffset": 0,  "cabinId": 3, "guestId": 9,  "hasBreakfast": false, "observations": "We will be bringing our small dog with us", "isPaid": true, "numGuests": 3 },
+  { "createdOffset": -14, "startOffset": -14,"endOffset": -11,"cabinId": 3, "guestId": 10, "hasBreakfast": true,  "observations": "", "isPaid": true, "numGuests": 4 },
+
+  { "createdOffset": -30, "startOffset": -4, "endOffset": 8,  "cabinId": 4, "guestId": 11, "hasBreakfast": true,  "observations": "", "isPaid": true, "numGuests": 4 },
+  { "createdOffset": -1,  "startOffset": 12, "endOffset": 17, "cabinId": 4, "guestId": 12, "hasBreakfast": true,  "observations": "", "isPaid": false, "numGuests": 4 },
+  { "createdOffset": -3,  "startOffset": 18, "endOffset": 19, "cabinId": 4, "guestId": 13, "hasBreakfast": false, "observations": "", "isPaid": true, "numGuests": 1 },
+
+  { "createdOffset": 0,   "startOffset": 14, "endOffset": 21, "cabinId": 5, "guestId": 14, "hasBreakfast": true,  "observations": "", "isPaid": false, "numGuests": 5 },
+  { "createdOffset": -6,  "startOffset": -6, "endOffset": -4, "cabinId": 5, "guestId": 15, "hasBreakfast": true,  "observations": "", "isPaid": true, "numGuests": 4 },
+  { "createdOffset": -4,  "startOffset": -4, "endOffset": -1, "cabinId": 5, "guestId": 16, "hasBreakfast": false, "observations": "", "isPaid": true, "numGuests": 6 },
+
+  { "createdOffset": -3,  "startOffset": 0,  "endOffset": 11, "cabinId": 6, "guestId": 17, "hasBreakfast": false, "observations": "We will be checking in late, around midnight. Hope that's okay :)", "isPaid": true, "numGuests": 6 },
+  { "createdOffset": -16, "startOffset": -16,"endOffset": -9, "cabinId": 6, "guestId": 18, "hasBreakfast": true,  "observations": "I will need a rollaway bed for one of the guests", "isPaid": true, "numGuests": 4 },
+  { "createdOffset": -18, "startOffset": -4, "endOffset": -1, "cabinId": 6, "guestId": 19, "hasBreakfast": true,  "observations": "", "isPaid": true, "numGuests": 6 },
+
+  { "createdOffset": -2,  "startOffset": 17, "endOffset": 23, "cabinId": 7, "guestId": 20, "hasBreakfast": false, "observations": "", "isPaid": false, "numGuests": 8 },
+  { "createdOffset": -7,  "startOffset": 40, "endOffset": 50, "cabinId": 7, "guestId": 21, "hasBreakfast": true,  "observations": "", "isPaid": true, "numGuests": 7 },
+  { "createdOffset": -55, "startOffset": 32, "endOffset": 37, "cabinId": 7, "guestId": 22, "hasBreakfast": true,  "observations": "", "isPaid": true, "numGuests": 6 },
+
+  { "createdOffset": -8,  "startOffset": -5, "endOffset": 0,  "cabinId": 8, "guestId": 1,  "hasBreakfast": true,  "observations": "My wife has a gluten allergy so I would like to request a gluten-free breakfast if possible", "isPaid": true, "numGuests": 9 },
+  { "createdOffset": 0,   "startOffset": 0,  "endOffset": 5,  "cabinId": 8, "guestId": 23, "hasBreakfast": true,  "observations": "I am celebrating my anniversary, can you arrange for any special amenities or decorations?", "isPaid": true, "numGuests": 10 },
+  { "createdOffset": -10, "startOffset": 10, "endOffset": 13, "cabinId": 8, "guestId": 24, "hasBreakfast": false, "observations": "", "isPaid": true, "numGuests": 7 }
+]

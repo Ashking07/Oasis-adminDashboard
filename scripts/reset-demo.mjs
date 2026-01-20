@@ -1,8 +1,34 @@
+// scripts/reset-demo.mjs
 import { createClient } from "@supabase/supabase-js";
 
-import { bookings } from "../src/data/data-bookings.js";
-import { cabins } from "../src/data/data-cabins.js";
-import { guests } from "../src/data/data-guests.js";
+// Seed data (Node-safe)
+import cabins from "./seed/cabins.json" with { type: "json" };
+import guests from "./seed/guests.json" with { type: "json" };
+import bookingSeeds from "./seed/bookings.json" with { type: "json" };
+
+// ---------- small utilities ----------
+function env(name) {
+  const v = process.env[name];
+  if (!v) throw new Error(`Missing env var: ${name}`);
+  return v;
+}
+
+function must(res, label) {
+  if (res?.error) throw new Error(`${label} failed: ${res.error.message}`);
+  return res;
+}
+
+// Dates from offsets (replaces date-fns/add + fromToday from frontend seed)
+function fromToday(offsetDays, withTime = false) {
+  const d = new Date();
+  d.setDate(d.getDate() + offsetDays);
+
+  if (!withTime) {
+    d.setUTCHours(0, 0, 0, 0);
+  }
+
+  return d.toISOString();
+}
 
 function subtractDates(dateStr1, dateStr2) {
   return Math.round(
@@ -11,108 +37,122 @@ function subtractDates(dateStr1, dateStr2) {
   );
 }
 
-function isToday(date) {
-  const d = new Date(date);
+// Booking status logic (replaces date-fns isPast/isToday/isFuture)
+function isTodayUTC(date) {
   const now = new Date();
   return (
-    d.getFullYear() === now.getFullYear() &&
-    d.getMonth() === now.getMonth() &&
-    d.getDate() === now.getDate()
+    date.getUTCFullYear() === now.getUTCFullYear() &&
+    date.getUTCMonth() === now.getUTCMonth() &&
+    date.getUTCDate() === now.getUTCDate()
   );
 }
-
 function isPast(date) {
-  const d = new Date(date);
-  return d < new Date() && !isToday(d);
+  // "past" but not including "today" is handled by caller
+  return date.getTime() < Date.now();
 }
-
 function isFuture(date) {
-  const d = new Date(date);
-  return d > new Date() && !isToday(d);
+  return date.getTime() > Date.now();
 }
 
-function env(name) {
-  const v = process.env[name];
-  if (!v) throw new Error(`Missing env var: ${name}`);
-  return v;
-}
-
+// ---------- Supabase client ----------
 const supabase = createClient(
   env("SUPABASE_URL"),
   env("SUPABASE_SERVICE_ROLE_KEY"),
   { auth: { persistSession: false } }
 );
 
-function must(label, res) {
-  if (res?.error) throw new Error(`${label} failed: ${res.error.message}`);
-  return res.data;
-}
-
+// ---------- delete in FK-safe order ----------
 async function deleteAll() {
-  must("delete bookings", await supabase.from("bookings").delete().neq("id", 0));
-  must("delete guests", await supabase.from("guests").delete().neq("id", 0));
-  must("delete cabins", await supabase.from("cabins").delete().neq("id", 0));
+  must(await supabase.from("bookings").delete().neq("id", 0), "delete bookings");
+  must(await supabase.from("guests").delete().neq("id", 0), "delete guests");
+  must(await supabase.from("cabins").delete().neq("id", 0), "delete cabins");
 }
 
+// ---------- insert base tables ----------
 async function insertGuests() {
-  must("insert guests", await supabase.from("guests").insert(guests));
-  const rows = must(
-    "fetch guest ids",
-    await supabase.from("guests").select("id").order("id")
+  const res = must(
+    await supabase.from("guests").insert(guests).select("id").order("id"),
+    "insert guests"
   );
-  return rows.map((g) => g.id);
+  return res.data.map((g) => g.id);
 }
 
 async function insertCabins() {
-  must("insert cabins", await supabase.from("cabins").insert(cabins));
-  const rows = must(
-    "fetch cabin ids",
-    await supabase.from("cabins").select("id").order("id")
+  const res = must(
+    await supabase.from("cabins").insert(cabins).select("id").order("id"),
+    "insert cabins"
   );
-  return rows.map((c) => c.id);
+  return res.data.map((c) => c.id);
 }
 
+// ---------- bookings (FK remap + derived fields) ----------
 async function insertBookings(guestIds, cabinIds) {
-  const finalBookings = bookings.map((booking) => {
-    const cabin = cabins.at(booking.cabinId - 1);
-    const numNights = subtractDates(booking.endDate, booking.startDate);
+  const breakfastPrice = 15;
 
-    const cabinPrice = numNights * (cabin.regularPrice - cabin.discount);
-    const extrasPrice = booking.hasBreakfast
-      ? numNights * 15 * booking.numGuests
+  const finalBookings = bookingSeeds.map((seed) => {
+    // Turn offsets into ISO strings
+    const created_at = fromToday(seed.createdOffset, true);
+    const startDate = fromToday(seed.startOffset, false);
+    const endDate = fromToday(seed.endOffset, false);
+
+    // Compute derived fields based on cabin pricing
+    const cabinSeed = cabins.at(seed.cabinId - 1);
+    const numNights = subtractDates(endDate, startDate);
+
+    const cabinPrice = numNights * (cabinSeed.regularPrice - cabinSeed.discount);
+    const extrasPrice = seed.hasBreakfast
+      ? numNights * breakfastPrice * seed.numGuests
       : 0;
 
+    // Status computation (same logic as instructor)
     let status;
-    if (isPast(booking.endDate)) status = "checked-out";
-    if (isFuture(booking.startDate) || isToday(booking.startDate))
-      status = "unconfirmed";
+    const end = new Date(endDate);
+    const start = new Date(startDate);
+
+    if (isPast(end) && !isTodayUTC(end)) status = "checked-out";
+    if (isFuture(start) || isTodayUTC(start)) status = "unconfirmed";
     if (
-      (isFuture(booking.endDate) || isToday(booking.endDate)) &&
-      isPast(booking.startDate)
+      (isFuture(end) || isTodayUTC(end)) &&
+      isPast(start) &&
+      !isTodayUTC(start)
     )
       status = "checked-in";
 
     return {
-      ...booking,
+      // base columns expected by your DB
+      created_at,
+      startDate,
+      endDate,
+      hasBreakfast: seed.hasBreakfast,
+      observations: seed.observations,
+      isPaid: seed.isPaid,
+      numGuests: seed.numGuests,
+
+      // derived columns expected by your app
       numNights,
       cabinPrice,
       extrasPrice,
       totalPrice: cabinPrice + extrasPrice,
-      guestId: guestIds.at(booking.guestId - 1),
-      cabinId: cabinIds.at(booking.cabinId - 1),
       status,
+
+      // FK remap (IMPORTANT)
+      guestId: guestIds.at(seed.guestId - 1),
+      cabinId: cabinIds.at(seed.cabinId - 1),
     };
   });
 
-  must("insert bookings", await supabase.from("bookings").insert(finalBookings));
+  must(await supabase.from("bookings").insert(finalBookings), "insert bookings");
 }
 
+// ---------- orchestrator ----------
 async function resetDemo() {
   console.log("Resetting Oasis demo data...");
+
   await deleteAll();
   const guestIds = await insertGuests();
   const cabinIds = await insertCabins();
   await insertBookings(guestIds, cabinIds);
+
   console.log("Demo reset complete.");
 }
 
