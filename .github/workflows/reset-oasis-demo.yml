@@ -1,0 +1,24 @@
+name: Reset Oasis Demo Data
+
+on:
+  schedule:
+    - cron: "30 6 * * *"   # daily reset
+  workflow_dispatch: {}
+
+jobs:
+  reset:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - run: npm ci
+
+      - name: Reset demo DB
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: node scripts/reset-demo.mjs
