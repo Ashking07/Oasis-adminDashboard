@@ -72,6 +72,12 @@ function Open({ children, opens: opensWindowName }) {
   const { open } = useContext(ModalContext);
 
   return cloneElement(children, { onClick: () => open(opensWindowName) });
+  // We use cloneElement to add the onClick prop to the child element (Button)
+  // without modifying the original Button component.
+  // This way, when the Button is clicked, it will call the open function
+  // with the specified window name to open the corresponding Modal.Window.
+  // This approach allows us to keep the Button component reusable and
+  // decoupled from the Modal logic.
 }
 
 function Window({ children, name }) {
