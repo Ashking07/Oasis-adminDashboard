@@ -1,10 +1,16 @@
 import { createClient } from "@supabase/supabase-js";
 import { isFuture, isPast, isToday } from "date-fns";
-import { subtractDates } from "../src/utils/helpers.js";
 
 import bookings from "../src/data/data-bookings.js";
 import cabins from "../src/data/data-cabins.js";
 import guests from "../src/data/data-guests.js";
+
+function subtractDates(dateStr1, dateStr2) {
+  return Math.round(
+    (new Date(dateStr1).getTime() - new Date(dateStr2).getTime()) /
+      (1000 * 60 * 60 * 24)
+  );
+}
 
 function env(name) {
   const v = process.env[name];
