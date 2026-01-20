@@ -15,13 +15,28 @@ jobs:
         with:
           node-version: "20"
 
+      - run: node -v
+
       - run: npm ci --omit=dev --ignore-scripts
+
+      - name: Debug seed files
+        run: |
+          echo "---- first 5 lines of seed files ----"
+          sed -n '1,5p' scripts/seed/cabins.json
+          sed -n '1,5p' scripts/seed/guests.json
+          sed -n '1,5p' scripts/seed/bookings.json
+
+          echo "---- validate JSON ----"
+          node -e "JSON.parse(require('fs').readFileSync('scripts/seed/cabins.json','utf8')); console.log('cabins.json ok')"
+          node -e "JSON.parse(require('fs').readFileSync('scripts/seed/guests.json','utf8')); console.log('guests.json ok')"
+          node -e "JSON.parse(require('fs').readFileSync('scripts/seed/bookings.json','utf8')); console.log('bookings.json ok')"
 
       - name: Reset demo DB
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: node scripts/reset-demo.mjs
+
 
 
 # I allow full CRUD in the public demo, but I run a scheduled server-side reset using Supabase 
